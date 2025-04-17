@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Favorites - Restaurant Recommender</title>
+    <style>
+        :root {
+            --sketch-black: #222222;
+            --sketch-bg: #f8f8f8;
+            --light-gray: #e0e0e0;
+        }
+
+        @font-face {
+            font-family: 'HandWritten';
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Indie_Flower/IndieFlower-Regular.ttf') format('truetype');
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'HandWritten', cursive;
+            background-color: var(--sketch-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Title and food icons section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+
+        .food-icon {
+            font-size: 0;
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+
+        .food-icon svg {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .food-icon:hover svg {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            color: var(--sketch-black);
+            margin: 0;
+            flex-grow: 1;
+            font-weight: normal;
+        }
+
+        h1 a {
+            text-decoration: none;
+            color: var(--sketch-black);
+        }
+
+        .favorites-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .favorites-title {
+            font-size: 28px;
+            margin: 10px 0 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .favorites-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .restaurant-card {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border: 2px solid var(--sketch-black);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .favorite-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            margin-right: 15px;
+            padding: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .favorite-btn svg {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            stroke: var(--sketch-black);
+            stroke-width: 2;
+            transition: fill 0.3s ease;
+        }
+
+        .favorite-btn.active svg {
+            fill: #ff6b6b;
+            stroke: #ff6b6b;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .restaurant-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .restaurant-name {
+            font-size: 22px;
+            margin: 0 0 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .restaurant-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .restaurant-price {
+            font-size: 18px;
+            margin-right: 15px;
+            white-space: nowrap;
+        }
+
+        .restaurant-rating {
+            display: flex;
+            align-items: center;
+        }
+
+        .star {
+            width: 20px;
+            height: 20px;
+            margin-right: 2px;
+        }
+
+        .star svg {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            stroke: var(--sketch-black);
+            stroke-width: 1;
+        }
+
+        .star.filled svg {
+            fill: rgb(0, 0, 0);
+            stroke: #040404;
+        }
+
+        .star.half-filled svg {
+            fill: url(#half-fill);
+            stroke: #000000;
+        }
+
+        .no-favorites,
+        .loading,
+        .error {
+            text-align: center;
+            padding: 30px;
+            font-size: 20px;
+            color: #555;
+        }
+
+        .error {
+            color: #e74c3c;
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid var(--sketch-black);
+            flex-shrink: 0;
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .footer-icon {
+            width: 30px;
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+        .footer-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .footer-label {
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <div class="container">
+            <!-- Header with food icons and title -->
+            <div class="header">
+                <div class="food-icon">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M30,40 Q50,10 70,40 L70,80 Q50,90 30,80 Z" stroke="black" stroke-width="2"
+                            fill="none" />
+                        <circle cx="50" cy="30" r="5" stroke="black" stroke-width="2" fill="none" />
+                    </svg>
+                </div>
+                <div class="food-icon">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" stroke="black" stroke-width="2" fill="none" />
+                        <path d="M30,50 L70,50 M50,30 L50,70" stroke="black" stroke-width="2" />
+                    </svg>
+                </div>
+                <h1><a href="index.html">Restaurant Recommender</a></h1>
+                <div class="food-icon">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M30,30 L70,30 L60,70 L40,70 Z" stroke="black" stroke-width="2" fill="none" />
+                        <path d="M40,30 L40,20 Q50,10 60,20 L60,30" stroke="black" stroke-width="2" fill="none" />
+                    </svg>
+                </div>
+                <div class="food-icon">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="30" stroke="black" stroke-width="2" fill="none" />
+                        <path d="M50,20 L50,10 M30,30 L20,20 M70,30 L80,20 M30,70 L20,80 M70,70 L80,80" stroke="black"
+                            stroke-width="2" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Favorites section -->
+            <div class="favorites-section">
+                <h2 class="favorites-title">My Favorite Restaurants</h2>
+                <div class="favorites-list" id="favorites-list">
+                    <!-- Restaurant cards will be dynamically inserted here -->
+                    <div class="loading">Loading your favorites...</div>
+                </div>
+            </div>
+
+            <!-- Footer navigation -->
+            <div class="footer">
+                <div class="footer-item active">
+                    <div class="footer-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                                stroke="black" stroke-width="2" fill="#ff6b6b" />
+                        </svg>
+                    </div>
+                    <span class="footer-label">Favorites</span>
+                </div>
+                <div class="footer-item" onclick="window.location.href='account.html'">
+                    <div class="footer-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="8" r="4" stroke="black" stroke-width="2" fill="none" />
+                            <path d="M5,21 v-2 a7,7 0 0,1 14,0 v2" stroke="black" stroke-width="2" fill="none" />
+                        </svg>
+                    </div>
+                    <span class="footer-label">Account</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SVG Definitions for half-filled stars -->
+    <svg width="0" height="0">
+        <defs>
+            <linearGradient id="half-fill" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="50%" stop-color="gold" />
+                <stop offset="50%" stop-color="transparent" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- JavaScript for favorites functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Container where favorite restaurant cards will be displayed
+            const favoritesContainer = document.getElementById('favorites-list');
+            const userId = 1; // Replace with actual user ID when you implement authentication
+
+            // Function to create star rating HTML
+            function createStarRating(rating) {
+                const fullStars = Math.floor(rating);
+                const hasHalfStar = rating % 1 >= 0.5;
+                let starsHTML = '';
+
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= fullStars) {
+                        starsHTML += `
+                            <div class="star filled" style="--i: ${i}">
+                                <svg viewBox="0 0 24 24">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </div>`;
+                    } else if (i === fullStars + 1 && hasHalfStar) {
+                        starsHTML += `
+                            <div class="star half-filled" style="--i: ${i}">
+                                <svg viewBox="0 0 24 24">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </div>`;
+                    } else {
+                        starsHTML += `
+                            <div class="star" style="--i: ${i}">
+                                <svg viewBox="0 0 24 24">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </div>`;
+                    }
+                }
+
+                return starsHTML;
+            }
+
+            // Function to create a restaurant card HTML
+            function createRestaurantCard(restaurant) {
+                return `
+                    <div class="restaurant-card" data-id="${restaurant.id}">
+                        <button class="favorite-btn active" onclick="removeFavorite(this, ${restaurant.id})">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                        </button>
+                        <div class="restaurant-info">
+                            <h3 class="restaurant-name">${restaurant.name}</h3>
+                            <div class="restaurant-details">
+                                <span class="restaurant-location">${restaurant.location}</span>
+                                <span class="restaurant-cuisine">${restaurant.cuisine}</span>
+                            </div>
+                        </div>
+                        <div class="restaurant-price">Rs ${restaurant.price_range}</div>
+                        <div class="restaurant-rating">
+                            ${createStarRating(restaurant.rating)}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Function to remove a restaurant from favorites
+            window.removeFavorite = function (button, restaurantId) {
+                // Visual feedback first (optimistic UI update)
+                const card = button.closest('.restaurant-card');
+                card.classList.add('removing');
+
+                // Call API to remove from favorites
+                fetch(`http://127.0.0.1:5000/remove_favorite`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        restaurant_id: restaurantId
+                    })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to remove favorite');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Remove the card with animation
+                        setTimeout(() => {
+                            card.remove();
+
+                            // Check if there are no favorites left
+                            if (favoritesContainer.children.length === 0) {
+                                favoritesContainer.innerHTML = '<p class="no-favorites">You have no favorite restaurants yet.</p>';
+                            }
+                        }, 300); // Match this with your CSS transition time
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Revert the visual change if there was an error
+                        card.classList.remove('removing');
+                        alert('Could not remove from favorites. Please try again.');
+                    });
+            };
+
+            // Function to fetch and display favorites
+            function fetchFavorites() {
+                // Show loading state
+                favoritesContainer.innerHTML = '<p class="loading">Loading your favorites...</p>';
+
+                // Fetch favorites from the API
+                fetch(`http://127.0.0.1:5000/favorites?user_id=${userId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch favorites');
+                        }
+                        return response.json();
+                    })
+                    .then(favorites => {
+                        // Clear loading message
+                        favoritesContainer.innerHTML = '';
+
+                        if (favorites.length === 0) {
+                            favoritesContainer.innerHTML = '<p class="no-favorites">You have no favorite restaurants yet.</p>';
+                            return;
+                        }
+
+                        // Create and append restaurant cards
+                        favorites.forEach(restaurant => {
+                            favoritesContainer.innerHTML += createRestaurantCard(restaurant);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        favoritesContainer.innerHTML = '<p class="error">Could not load your favorites. Please try again later.</p>';
+                    });
+            }
+
+            // Initialize the page
+            fetchFavorites();
+
+            // Add CSS for animations
+            const style = document.createElement('style');
+            style.textContent = `
+                .restaurant-card {
+                    transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+                }
+                .restaurant-card.removing {
+                    opacity: 0;
+                    transform: translateX(50px);
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+    <script src="favorites.js"></script>
+</body>
+
+</html>

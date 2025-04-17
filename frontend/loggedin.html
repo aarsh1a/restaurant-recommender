@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Restaurant Finder</title>
+    <style>
+        :root {
+            --sketch-black: #222222;
+            --sketch-bg: #f8f8f8;
+            --light-gray: #e0e0e0;
+        }
+
+        @font-face {
+            font-family: 'HandWritten';
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Indie_Flower/IndieFlower-Regular.ttf') format('truetype');
+        }
+
+        body {
+            font-family: 'HandWritten', cursive;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--sketch-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            max-width: 900px;
+            width: 100%;
+            max-height: 900px;
+            background-color: var(--sketch-bg);
+            border-radius: 15px;
+            padding: 40px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        /* Hand-drawn border */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid var(--sketch-black);
+            border-radius: 15px;
+            z-index: -1;
+
+            /* Make border hand-drawn style with wave effect */
+            box-shadow:
+                2px 2px 0 rgba(0, 0, 0, 0.1),
+                -2px -2px 0 rgba(0, 0, 0, 0.1),
+                2px -2px 0 rgba(0, 0, 0, 0.1),
+                -2px 2px 0 rgba(0, 0, 0, 0.1);
+
+            /* Create uneven border */
+            clip-path: polygon(0% 5%, 3% 0%, 97% 0%, 100% 5%,
+                    100% 95%, 97% 100%, 3% 100%, 0% 95%);
+        }
+
+        /* Title and food icons section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .food-icon {
+            font-size: 0;
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            color: var(--sketch-black);
+            margin: 0;
+            flex-grow: 1;
+            font-weight: normal;
+        }
+
+        /* Footer with navigation */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid var(--sketch-black);
+            flex-shrink: 0;
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .footer-icon {
+            width: 30px;
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+        .footer-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .footer-label {
+            font-size: 16px;
+        }
+
+        /* SVG icons */
+        .svg-icon {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            stroke: var(--sketch-black);
+            stroke-width: 2px;
+            fill: transparent;
+        }
+
+        /* Animation for icons */
+        @keyframes wiggle {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-5deg);
+            }
+
+            50% {
+                transform: rotate(0deg);
+            }
+
+            75% {
+                transform: rotate(5deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        .food-icon:hover svg {
+            animation: wiggle 0.5s ease-in-out;
+        }
+
+        /* Profile page styles */
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 15px 0;
+            position: relative;
+            flex: 1;
+            /* Take up available space */
+            margin: 0;
+        }
+
+        .stick-figure {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .greeting {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .greeting-text {
+            font-size: 34px;
+            margin-right: 15px;
+        }
+
+        .user-name {
+            font-size: 34px;
+            /* Match the greeting-text font size */
+            font-family: inherit;
+            /* Use the same font as the greeting-text */
+            font-style: none;
+            /* Make it italic like the "hi" text */
+            padding: 0;
+            /* Remove padding */
+            border: none;
+            /* Remove the border/box completely */
+            border-radius: 0;
+            /* Remove border radius */
+            min-width: 150px;
+            text-align: left;
+            /* Align text to the left */
+            background: transparent;
+            /* Make background transparent */
+            outline: none;
+            /* Remove outline when focused */
+            box-shadow: none;
+            /* Remove any box shadow */
+        }
+
+        .logout-btn {
+            margin-top: 80px;
+            padding: 10px 25px;
+            font-family: 'HandWritten', cursive;
+            font-size: 18px;
+            color: var(--sketch-black);
+            background-color: transparent;
+            border: 2px solid var(--sketch-black);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-btn:active {
+            transform: translateY(0);
+            box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Hand-drawn cake icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M12,30 L52,30 L52,50 L12,50 Z" stroke-linecap="round" />
+                    <path d="M12,40 L52,40" stroke-linecap="round" />
+                    <path d="M22,30 L22,40" stroke-linecap="round" />
+                    <path d="M32,30 L32,40" stroke-linecap="round" />
+                    <path d="M42,30 L42,40" stroke-linecap="round" />
+                    <path d="M20,20 L44,20 L42,30 L22,30 Z" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn pizza icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="25" />
+                    <path d="M32,32 L32,7" stroke-linecap="round" />
+                    <path d="M32,32 L55,22" stroke-linecap="round" />
+                    <path d="M32,32 L48,48" stroke-linecap="round" />
+                    <path d="M32,32 L16,48" stroke-linecap="round" />
+                    <path d="M32,32 L9,22" stroke-linecap="round" />
+                    <circle cx="22" cy="22" r="3" />
+                    <circle cx="42" cy="22" r="3" />
+                    <circle cx="32" cy="42" r="3" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn glass icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M20,10 L44,10 L40,50 L24,50 Z" stroke-linecap="round" />
+                    <path d="M22,20 L42,20" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <h1 onclick="window.location.href='index.html'" style="cursor: pointer;">Restaurant Recommender</h1>
+
+            <!-- Hand-drawn cocktail icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M25,15 L45,35 L45,50" stroke-linecap="round" />
+                    <path d="M20,15 L38,33" stroke-linecap="round" />
+                    <path d="M45,35 C45,35 50,38 45,40 C40,42 45,45 45,45" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn egg icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="15" />
+                    <circle cx="32" cy="32" r="5" fill="white" stroke="black" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn pizza slice icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M10,50 L50,10 L54,54 Z" stroke-linecap="round" />
+                    <path d="M30,30 C30,30, 35,25, 40,30" stroke-linecap="round" />
+                    <circle cx="25" cy="35" r="3" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="profile-container">
+            <!-- Stick Figure SVG -->
+            <div class="profile-container">
+                <!-- Replace stick figure SVG with your SVG image -->
+                <div class="stick-figure">
+                    <img src="/Users/aarshia/Downloads/image 1.svg" alt="Profile Avatar" width="150" height="200">
+                </div>
+            </div>
+            <!-- Greeting with name -->
+            <div class="greeting">
+                <span class="greeting-text">hi</span>
+                <input type="text" id="userName" class="user-name" value="" readonly>
+            </div>
+
+            <!-- Logout Button -->
+            <button class="logout-btn" id="logoutBtn">log out</button>
+        </div>
+
+        <div class="footer">
+            <div class="footer-item" onclick="window.location.href='favorites.html'">
+                <div class="footer-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            stroke="black" stroke-width="2" fill=none />
+                    </svg>
+                </div>
+                <div>Favorites</div>
+            </div>
+            <div class="footer-item" onclick="window.location.href='account.html'">
+                <div class="footer-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4" stroke="black" stroke-width="2" fill="none" />
+                        <path d="M5,21 v-2 a7,7 0 0,1 14,0 v2" stroke="black" stroke-width="2" fill="none" />
+                    </svg>
+                </div>
+                <div>Account</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userNameElement = document.getElementById('userName');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const accountBtn = document.querySelector('.footer-item:nth-child(2)'); // The account button
+
+            if (accountBtn) {
+                accountBtn.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent default navigation
+
+                    // Check if user is logged in
+                    if (isUserLoggedIn()) {
+                        // If logged in, go to loggedin.html
+                        window.location.href = 'loggedin.html';
+                    } else {
+                        // If not logged in, go to login.html
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
+            // Check if user is logged in
+            const userId = localStorage.getItem('user_id');
+            const userName = localStorage.getItem('user_name');
+
+            if (!userId || !userName) {
+                // If not logged in, redirect to login page
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Display user name
+            userNameElement.value = userName;
+
+            // Handle logout
+            logoutBtn.addEventListener('click', function () {
+                // Clear user data from localStorage
+                localStorage.removeItem('user_id');
+                localStorage.removeItem('user_name');
+
+                // Redirect to login page
+                window.location.href = 'index.html';
+
+                // Optional: Show logout success message
+                alert('You have been logged out successfully!');
+            });
+        });
+    </script>
+</body>
+
+</html>

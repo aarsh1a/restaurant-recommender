@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Restaurant Finder</title>
+    <style>
+        :root {
+            --sketch-black: #222222;
+            --sketch-bg: #f8f8f8;
+            --light-gray: #e0e0e0;
+        }
+
+        @font-face {
+            font-family: 'HandWritten';
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Indie_Flower/IndieFlower-Regular.ttf') format('truetype');
+        }
+
+        body {
+            font-family: 'HandWritten', cursive;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--sketch-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            max-width: 900px;
+            width: 100%;
+            background-color: var(--sketch-bg);
+            border-radius: 15px;
+            padding: 40px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        /* Hand-drawn border */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid var(--sketch-black);
+            border-radius: 15px;
+            z-index: -1;
+
+            /* Make border hand-drawn style with wave effect */
+            box-shadow:
+                2px 2px 0 rgba(0, 0, 0, 0.1),
+                -2px -2px 0 rgba(0, 0, 0, 0.1),
+                2px -2px 0 rgba(0, 0, 0, 0.1),
+                -2px 2px 0 rgba(0, 0, 0, 0.1);
+
+            /* Create uneven border */
+            clip-path: polygon(0% 5%, 3% 0%, 97% 0%, 100% 5%,
+                    100% 95%, 97% 100%, 3% 100%, 0% 95%);
+        }
+
+        /* Title and food icons section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .food-icon {
+            font-size: 0;
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            color: var(--sketch-black);
+            margin: 0;
+            flex-grow: 1;
+            font-weight: normal;
+        }
+
+        /* Footer with navigation */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding-top: 5px;
+            border-top: 2px solid var(--sketch-black);
+            position: relative;
+        }
+
+        .footer::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--sketch-black);
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .footer-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .footer-icon {
+            font-size: 30px;
+            margin-bottom: -10px;
+        }
+
+        /* SVG icons */
+        .svg-icon {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            stroke: var(--sketch-black);
+            stroke-width: 2px;
+            fill: transparent;
+        }
+
+        /* Animation for icons */
+        @keyframes wiggle {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-5deg);
+            }
+
+            50% {
+                transform: rotate(0deg);
+            }
+
+            75% {
+                transform: rotate(5deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        .food-icon:hover svg {
+            animation: wiggle 0.5s ease-in-out;
+        }
+
+        /* Login Form Styles */
+        .login-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 30px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .login-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .login-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid var(--sketch-black);
+            z-index: -1;
+            /* Hand-drawn border effect */
+            clip-path: polygon(1% 2%, 3% 1%, 97% 1%, 99% 2%,
+                    99% 98%, 97% 99%, 3% 99%, 1% 98%);
+            transition: all 0.3s ease;
+        }
+
+        .login-container:hover::before {
+            box-shadow: 4px 8px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .login-title {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: var(--sketch-black);
+            transition: transform 0.3s ease;
+        }
+
+        .login-container:hover .login-title {
+            transform: scale(1.05);
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-input {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:hover {
+            transform: translateX(5px);
+        }
+
+        .form-input input {
+            width: 100%;
+            padding: 12px;
+            font-family: 'HandWritten', cursive;
+            font-size: 18px;
+            color: var(--sketch-black);
+            background-color: transparent;
+            border: 1px solid var(--sketch-black);
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        .form-input input:focus {
+            outline: none;
+            transform: translateY(-3px);
+            box-shadow: 2px 4px 0 rgba(0, 0, 0, 0.1);
+            border-width: 2px;
+            animation: wiggle-input 0.5s ease-in-out;
+        }
+
+        @keyframes wiggle-input {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-1deg);
+            }
+
+            75% {
+                transform: rotate(1deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        .submit-btn {
+            margin: 20px auto 0;
+            padding: 10px 30px;
+            font-family: 'HandWritten', cursive;
+            font-size: 18px;
+            color: var(--sketch-black);
+            background-color: transparent;
+            border: 2px solid var(--sketch-black);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.4s;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 3px 5px 0 rgba(0, 0, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* Ripple effect on button click */
+        .submit-btn::after {
+            content: "";
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: all 0.5s;
+        }
+
+        .submit-btn:active::after {
+            transform: translate(-50%, -50%) scale(2);
+            opacity: 1;
+            transition: 0s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Hand-drawn cake icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M12,30 L52,30 L52,50 L12,50 Z" stroke-linecap="round" />
+                    <path d="M12,40 L52,40" stroke-linecap="round" />
+                    <path d="M22,30 L22,40" stroke-linecap="round" />
+                    <path d="M32,30 L32,40" stroke-linecap="round" />
+                    <path d="M42,30 L42,40" stroke-linecap="round" />
+                    <path d="M20,20 L44,20 L42,30 L22,30 Z" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn pizza icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="25" />
+                    <path d="M32,32 L32,7" stroke-linecap="round" />
+                    <path d="M32,32 L55,22" stroke-linecap="round" />
+                    <path d="M32,32 L48,48" stroke-linecap="round" />
+                    <path d="M32,32 L16,48" stroke-linecap="round" />
+                    <path d="M32,32 L9,22" stroke-linecap="round" />
+                    <circle cx="22" cy="22" r="3" />
+                    <circle cx="42" cy="22" r="3" />
+                    <circle cx="32" cy="42" r="3" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn glass icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M20,10 L44,10 L40,50 L24,50 Z" stroke-linecap="round" />
+                    <path d="M22,20 L42,20" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <h1 onclick="window.location.href='index.html'" style="cursor: pointer;">Restaurant Recommender</h1>
+
+            <!-- Hand-drawn cocktail icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M25,15 L45,35 L45,50" stroke-linecap="round" />
+                    <path d="M20,15 L38,33" stroke-linecap="round" />
+                    <path d="M45,35 C45,35 50,38 45,40 C40,42 45,45 45,45" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn egg icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="15" />
+                    <circle cx="32" cy="32" r="5" fill="white" stroke="black" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn pizza slice icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M10,50 L50,10 L54,54 Z" stroke-linecap="round" />
+                    <path d="M30,30 C30,30, 35,25, 40,30" stroke-linecap="round" />
+                    <circle cx="25" cy="35" r="3" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Login Form Content -->
+        <div class="login-container">
+            <h2 class="login-title">Login / Sign Up</h2>
+            <form class="login-form" action="#" method="post">
+                <div class="form-input">
+                    <input type="text" id="name" name="name" placeholder="name..." required>
+                </div>
+                <div class="form-input">
+                    <input type="email" id="email" name="email" placeholder="email..." required>
+                </div>
+                <div class="form-input">
+                    <input type="password" id="password" name="password" placeholder="password..." required>
+                </div>
+                <button type="submit" class="submit-btn">SUBMIT</button>
+            </form>
+        </div>
+
+        <div class="footer">
+            <div class="footer-item" onclick="window.location.href='favorites.html'">
+                <div class="footer-icon">❤</div>
+                <div>Favorites</div>
+            </div>
+            <div class="footer-item" onclick="window.location.href='account.html'">
+                <div class="footer-icon">👤</div>
+                <div>Account</div>
+            </div>
+        </div>
+    </div>
+    <script src="signup.js"></script>
+</body>
+
+</html>

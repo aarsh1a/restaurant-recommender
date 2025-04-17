@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Finder</title>
+    <style>
+        :root {
+            --sketch-black: #222222;
+            --sketch-bg: #f8f8f8;
+            --light-gray: #e0e0e0;
+        }
+
+        @font-face {
+            font-family: 'HandWritten';
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Indie_Flower/IndieFlower-Regular.ttf') format('truetype');
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'HandWritten', cursive;
+            background-color: var(--sketch-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Title and food icons section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        .food-icon {
+            font-size: 0;
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            color: var(--sketch-black);
+            margin: 0;
+            flex-grow: 1;
+            font-weight: normal;
+        }
+
+        /* Form layout with two columns */
+        .form-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 20px;
+            color: var(--sketch-black);
+        }
+
+        /* Hand-drawn select style */
+        select {
+            width: 100%;
+            padding: 10px;
+            font-family: 'HandWritten', cursive;
+            font-size: 18px;
+            color: var(--sketch-black);
+            background-color: transparent;
+            border: 2px solid var(--sketch-black);
+            border-radius: 5px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:hover,
+        select:focus {
+            transform: translateY(-3px);
+            box-shadow: 2px 4px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* Price range slider */
+        .price-range {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .price-range-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 2px;
+            background: var(--sketch-black);
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--sketch-black);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Star rating */
+        .rating {
+            display: flex;
+            font-size: 30px;
+            letter-spacing: 10px;
+        }
+
+        .star {
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .star:hover {
+            transform: scale(1.3) rotate(5deg);
+        }
+
+        .star.filled {
+            color: var(--sketch-black);
+        }
+
+        /* Submit button */
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        button {
+            padding: 10px 40px;
+            font-family: 'HandWritten', cursive;
+            font-size: 20px;
+            background-color: transparent;
+            border: 2px solid var(--sketch-black);
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* SVG icons */
+        .svg-icon {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            stroke: var(--sketch-black);
+            stroke-width: 2px;
+            fill: transparent;
+        }
+
+        /* Animation for icons */
+        @keyframes wiggle {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-5deg);
+            }
+
+            50% {
+                transform: rotate(0deg);
+            }
+
+            75% {
+                transform: rotate(5deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        .food-icon:hover svg {
+            animation: wiggle 0.5s ease-in-out;
+        }
+
+        /* Footer with navigation */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid var(--sketch-black);
+            flex-shrink: 0;
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .footer-icon {
+            width: 30px;
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+        .footer-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .footer-label {
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Hand-drawn cake icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M12,30 L52,30 L52,50 L12,50 Z" stroke-linecap="round" />
+                    <path d="M12,40 L52,40" stroke-linecap="round" />
+                    <path d="M22,30 L22,40" stroke-linecap="round" />
+                    <path d="M32,30 L32,40" stroke-linecap="round" />
+                    <path d="M42,30 L42,40" stroke-linecap="round" />
+                    <path d="M20,20 L44,20 L42,30 L22,30 Z" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn pizza icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="25" />
+                    <path d="M32,32 L32,7" stroke-linecap="round" />
+                    <path d="M32,32 L55,22" stroke-linecap="round" />
+                    <path d="M32,32 L48,48" stroke-linecap="round" />
+                    <path d="M32,32 L16,48" stroke-linecap="round" />
+                    <path d="M32,32 L9,22" stroke-linecap="round" />
+                    <circle cx="22" cy="22" r="3" />
+                    <circle cx="42" cy="22" r="3" />
+                    <circle cx="32" cy="42" r="3" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn glass icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M20,10 L44,10 L40,50 L24,50 Z" stroke-linecap="round" />
+                    <path d="M22,20 L42,20" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <h1 onclick="window.location.href='index.html'" style="cursor: pointer;">Restaurant Recommender</h1>
+
+            <!-- Hand-drawn cocktail icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M25,15 L45,35 L45,50" stroke-linecap="round" />
+                    <path d="M20,15 L38,33" stroke-linecap="round" />
+                    <path d="M45,35 C45,35 50,38 45,40 C40,42 45,45 45,45" stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn egg icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="15" />
+                    <circle cx="32" cy="32" r="5" fill="white" stroke="black" />
+                </svg>
+            </div>
+
+            <!-- Hand-drawn pizza slice icon -->
+            <div class="food-icon">
+                <svg class="svg-icon" viewBox="0 0 64 64">
+                    <path d="M10,50 L50,10 L54,54 Z" stroke-linecap="round" />
+                    <path d="M30,30 C30,30, 35,25, 40,30" stroke-linecap="round" />
+                    <circle cx="25" cy="35" r="3" />
+                </svg>
+            </div>
+        </div>
+
+        <form id="filter-form">
+            <div class="form-layout">
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="location">Location:</label>
+                        <select id="location">
+                            <option value="">select...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Price(for two):</label>
+                        <div id="price-value" style="text-align: center; margin-bottom: 10px;">500</div>
+                        <div class="price-range">
+                            <span>0</span>
+                            <input type="range" id="price" min="0" max="2000" value="1000" step="100">
+                            <span>2000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="cuisine">Cuisine:</label>
+                        <select id="cuisine">
+                            <option value="">select...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Rating:</label>
+                        <div id="rating" class="rating">
+                            <span class="star" data-rating="1">☆</span>
+                            <span class="star" data-rating="2">☆</span>
+                            <span class="star" data-rating="3">☆</span>
+                            <span class="star" data-rating="4">☆</span>
+                            <span class="star" data-rating="5">☆</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button type="submit">SUBMIT</button>
+            </div>
+        </form>
+
+        <div class="footer">
+            <div class="footer-item" onclick="window.location.href='favorites.html'">
+                <div class="footer-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            stroke="black" stroke-width="2" fill=none />
+                    </svg>
+                </div>
+                <div>Favorites</div>
+            </div>
+            <div class="footer-item" onclick="window.location.href='account.html'">
+                <div class="footer-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4" stroke="black" stroke-width="2" fill="none" />
+                        <path d="M5,21 v-2 a7,7 0 0,1 14,0 v2" stroke="black" stroke-width="2" fill="none" />
+                    </svg>
+                </div>
+                <div>Account</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Price range slider
+            const priceSlider = document.getElementById('price');
+
+            // Star rating
+            const stars = document.querySelectorAll('.star');
+            let selectedRating = 0;
+
+            stars.forEach(star => {
+                star.addEventListener('click', function () {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    selectedRating = rating;
+
+                    // Update stars
+                    stars.forEach(s => {
+                        const starRating = parseInt(s.getAttribute('data-rating'));
+                        if (starRating <= selectedRating) {
+                            s.classList.add('filled');
+                            s.textContent = '★';
+                        } else {
+                            s.classList.remove('filled');
+                            s.textContent = '☆';
+                        }
+                    });
+                });
+
+                star.addEventListener('mouseover', function () {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+
+                    // Preview rating on hover
+                    stars.forEach(s => {
+                        const starRating = parseInt(s.getAttribute('data-rating'));
+                        if (starRating <= rating) {
+                            s.textContent = '★';
+                        } else {
+                            s.textContent = '☆';
+                        }
+                    });
+                });
+
+                star.addEventListener('mouseout', function () {
+                    // Restore original rating when not hovering
+                    stars.forEach(s => {
+                        const starRating = parseInt(s.getAttribute('data-rating'));
+                        if (starRating <= selectedRating) {
+                            s.textContent = '★';
+                            s.classList.add('filled');
+                        } else {
+                            s.textContent = '☆';
+                            s.classList.remove('filled');
+                        }
+                    });
+                });
+            });
+
+            // Add subtle hand-drawn animation effect
+            document.querySelectorAll('.form-group, .button-container, .footer-item').forEach(el => {
+                el.addEventListener('mouseenter', function () {
+                    const randomRotation = (Math.random() * 2 - 1) * 0.5;
+                    this.style.transform = `rotate(${randomRotation}deg) translateY(-3px)`;
+                });
+
+                el.addEventListener('mouseleave', function () {
+                    this.style.transform = 'rotate(0deg) translateY(0)';
+                });
+            });
+
+            // Make SVG food icons interactive
+            document.querySelectorAll('.food-icon').forEach(icon => {
+                icon.addEventListener('mouseenter', function () {
+                    const svg = this.querySelector('svg');
+                    svg.style.animation = 'wiggle 0.5s ease-in-out';
+                });
+
+                icon.addEventListener('mouseleave', function () {
+                    const svg = this.querySelector('svg');
+                    svg.style.animation = 'none';
+                    // Trigger reflow
+                    void svg.offsetWidth;
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
+<script src="script.js"></script>
