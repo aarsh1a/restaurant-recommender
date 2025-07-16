@@ -32,16 +32,22 @@ a simple web‑based app to find restaurants based on location, cuisine, price r
 ## screenshots
 
 landing page:  
-![landing page](screenshots/landing.png)
+<img width="467" height="289" alt="image" src="https://github.com/user-attachments/assets/efc7826f-13e0-4082-ba89-289648a5813c" />
+<img width="467" height="276" alt="image" src="https://github.com/user-attachments/assets/202853a9-0943-42c0-a549-0d5eee066a1e" />
+
 
 login / signup:  
-![login page](screenshots/login.png)
+<img width="482" height="283" alt="image" src="https://github.com/user-attachments/assets/64424e4f-ca5b-4bda-9e29-d57985f1e7ac" />
+
+
 
 favorites page:  
-![favorites page](screenshots/favorites.png)
+<img width="476" height="302" alt="image" src="https://github.com/user-attachments/assets/e9a595ea-86b7-4b03-ac3e-919d1983cd06" />
+
 
 account page:  
-![account page](screenshots/account.png)
+<img width="470" height="283" alt="image" src="https://github.com/user-attachments/assets/2525ba40-332e-47a4-88cd-68bcba173287" />
+
 
 ## setup
 1. clone this repo  
