@@ -1,51 +1,42 @@
-restaurant finder
-a simple web app to help users find restaurants based on:
+estaurant finder
+restaurant finder is a web-based application built with flask and sqlite that helps users discover restaurants based on their preferences. users can filter restaurants by cuisine, location, price range, and rating, and manage their favorite restaurants through a simple interface.
+
+features
+filter restaurants by:
 
 location
 
 cuisine
 
-price range
+price (for two)
 
-rating (with clickable stars)
+rating (clickable star rating)
 
-users can also:
+register and log in as a user
 
-register and log in
-
-save favorite restaurants
+add restaurants to favorites
 
 view and remove favorites
 
-the app uses an sqlite database with a flask backend and a frontend built in html, css, and javascript.
+responsive frontend built with html, css, and javascript
 
-what it does
-filters restaurants dynamically by user preferences
-
-shows matching results from the database
-
-supports adding and removing favorites
-
-keeps data stored persistently in sqlite
-
-clean, hand-drawn inspired interface
+backend powered by flask and sqlite
 
 screenshots
+login / signup page:
 
-login and signup page
-<img width="482" height="283" alt="image" src="https://github.com/user-attachments/assets/bae4b4ac-dae2-4d6b-9eca-db49c79cd27d" />
+landing page with filters:
 
+favorites page:
 
-landing page with filters
-<img width="467" height="289" alt="image" src="https://github.com/user-attachments/assets/5c1a7425-77cb-4a70-82ea-3db3f70700a3" />
-<img width="467" height="276" alt="image" src="https://github.com/user-attachments/assets/9a4368bf-5e4b-40dc-a6cd-478758bd38bb" />
+account page:
 
+tech stack
+backend: python, flask
 
-favorites page
-<img width="476" height="302" alt="image" src="https://github.com/user-attachments/assets/1522e3b8-05a2-4abe-9172-77a7730f9420" />
+database: sqlite
 
+frontend: html, css, javascript
 
-account page
-<img width="470" height="283" alt="image" src="https://github.com/user-attachments/assets/81a2abd1-882b-49f6-abe0-bf00f9b0f6fe" />
-
-
+about
+this project demonstrates how to build a full-stack web app that integrates user authentication, data filtering, and database operations in sqlite using flask. it focuses on clean api design, dynamic querying, and user-friendly interface.
