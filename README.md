@@ -1,42 +1,53 @@
-estaurant finder
-restaurant finder is a web-based application built with flask and sqlite that helps users discover restaurants based on their preferences. users can filter restaurants by cuisine, location, price range, and rating, and manage their favorite restaurants through a simple interface.
+# restaurant finder
 
-features
-filter restaurants by:
+a simple web‑based app to find restaurants based on location, cuisine, price range, and rating. built using flask (python), sqlite, html/css, and javascript.
 
-location
+## features
+- filter restaurants by cuisine, location, price range, and rating
+- manage user favorites (add/remove)
+- user login and registration
+- stores restaurant data in sqlite database
+- clean, hand‑drawn style frontend interface
 
-cuisine
+## tech stack
+- python (flask)
+- sqlite
+- html, css, javascript
 
-price (for two)
+## database tables
+- users
+- restaurants
+- favorites
 
-rating (clickable star rating)
+## api endpoints
+- `/restaurants` – get filtered restaurant list
+- `/add_favorite` – add restaurant to favorites
+- `/favorites` – list user favorites
+- `/remove_favorite` – remove restaurant from favorites
+- `/locations` – list unique locations
+- `/cuisines` – list unique cuisines
+- `/register` – register new user
+- `/login` – user login
 
-register and log in as a user
+## screenshots
 
-add restaurants to favorites
+landing page:  
+![landing page](screenshots/landing.png)
 
-view and remove favorites
+login / signup:  
+![login page](screenshots/login.png)
 
-responsive frontend built with html, css, and javascript
+favorites page:  
+![favorites page](screenshots/favorites.png)
 
-backend powered by flask and sqlite
+account page:  
+![account page](screenshots/account.png)
 
-screenshots
-login / signup page:
-
-landing page with filters:
-
-favorites page:
-
-account page:
-
-tech stack
-backend: python, flask
-
-database: sqlite
-
-frontend: html, css, javascript
-
-about
-this project demonstrates how to build a full-stack web app that integrates user authentication, data filtering, and database operations in sqlite using flask. it focuses on clean api design, dynamic querying, and user-friendly interface.
+## setup
+1. clone this repo  
+2. install dependencies:  
+   ```bash
+   pip install flask flask-cors
+3.run the backend
+python app.py
+4. open index.html in your browser
